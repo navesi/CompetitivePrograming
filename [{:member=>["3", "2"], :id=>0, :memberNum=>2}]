@@ -1,0 +1,6 @@
+[{:member=>["3", "2"], :id=>0, :memberNum=>2}]
+
+[{:owner=>"1", :type=>"0", :target=>"2", :id=>0},
+ {:owner=>"3", :type=>"1", :target=>"1", :id=>1},
+ {:owner=>"3", :type=>"0", :target=>"2", :id=>2},
+ {:owner=>"4", :type=>"0", :target=>"1", :id=>3}]
