@@ -10,8 +10,8 @@ class DartsGameManager
 		# 1行目には初期値点の高さo_y,矢の初速s,角度θがスペース区切りの数値で入力されます。
 		line1 = gets.chomp.split(' ')
 		@arrowData = { height: line1[0].to_i,
-								speed: line1[1].to_i,# m/sec
-								angle: line1[2].to_i
+			speed: line1[1].to_i,# m/sec
+			angle: line1[2].to_i
 		}
 		# 2行目には的までの距離xと高さyと的の大きさがスペース区切りの数値で入力されます。
 		line2 = gets.chomp.split(' ')
@@ -28,7 +28,6 @@ class DartsGameManager
 
 	# @param [Float] Xの時点の矢の高さ
 	def show(arrowHeight)
-
 		if isArrowHitTarget?(arrowHeight)
 			print "Hit " + (@targetData[:y] - arrowHeight).round(1).abs.to_s
 		else
@@ -44,7 +43,6 @@ class DartsGameManager
 		second = @targetData[:x] * Math.tan(rad)
 		third = (9.8) * (@targetData[:x] ** 2)
 		fourth = 2 * @arrowData[:speed] ** 2 * Math.cos(rad) ** 2
-
 		result = first + second - (third / fourth)
 		return result
 	end

@@ -21,7 +21,7 @@ class HeroPositionManager
 
 		line2arr = gets.chomp.split(' ')
 		@heroPos = {:x =>line2arr[0].to_i,
-			 :y =>line2arr[1].to_i}
+			:y =>line2arr[1].to_i}
 
 		@logs = Array.new
 		for num in 1..logNum do
@@ -44,13 +44,13 @@ class HeroPositionManager
 	def updatePositionWithLog(log)
 		case log[:direction]
 		when "U" then
-			updateHeroPositionUp log[:length]
+			updateHeroPositionUp(log[:length])
 		when "D" then
-			updateHeroPositionDown log[:length]
+			updateHeroPositionDown(log[:length])
 		when "R" then
-			updateHeroPositionRight log[:length]
+			updateHeroPositionRight(log[:length])
 		when "L" then
-			updateHeroPositionLeft log[:length]
+			updateHeroPositionLeft(log[:length])
 		# else
 		end # eo case
 	end

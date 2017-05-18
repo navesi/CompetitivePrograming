@@ -17,23 +17,24 @@ class ChatMessageManager
 		@staffNum = line1Arr[0].to_i
 		groupNum = line1Arr[1].to_i
 		messageNum = line1Arr[2].to_i
-
 		@groupDatas = []
 		for i in 1..(groupNum)
 			lineGroup = gets.chomp.split(' ')
 			memberNum = lineGroup.shift
-			@groupDatas.push( { member: lineGroup, id: i.to_s, memberNum: memberNum.to_i } )
+			@groupDatas.push( { member: lineGroup,
+				id: i.to_s,
+				memberNum: memberNum.to_i
+			})
 		end
-		# pp @groupDatas
 		@messageDatas = []
 		for j in 0..(messageNum - 1)
 			lineMessage = gets.chomp.split(' ')
-
 			@messageDatas.push ({ owner: lineMessage[0],
-												 type: lineMessage[1],
-												 target: lineMessage[2],
-												 content: lineMessage[3],
-													id: j })
+				type: lineMessage[1],
+				target: lineMessage[2],
+				content: lineMessage[3],
+				id: j
+				})
 		end
 	end
 
@@ -57,7 +58,6 @@ class ChatMessageManager
 	def getMessageLogsFromId(staffId)
 		result = []
 		groupIds = getGroupIds(staffId)
-
 		@messageDatas.each do |message|
 			if hasStaffAuthority(staffId, message, groupIds)
 				result.push message[:content]

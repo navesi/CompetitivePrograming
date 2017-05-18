@@ -16,7 +16,6 @@ class BrowsingManager
 		commandNum = gets.chomp.to_i
 		@commandLogs = []
 		@histories = []
-
 		for num in 0..(commandNum - 1)
 			@commandLogs[num] = { command: gets.chomp }
 		end
@@ -44,7 +43,6 @@ class BrowsingManager
 	# 前の戻るコマンド時の処理
 	# @return [String] 戻り先のページ名
 	def backToLast
-		# pp @histories
 		nextPage = @histories.pop
 		return nextPage
 	end
@@ -62,7 +60,6 @@ class BrowsingManager
 		elsif	command[:command].include?(useBB)
 		  resultPage = backToLast
 		end
-
 		return resultPage
 	end
 end

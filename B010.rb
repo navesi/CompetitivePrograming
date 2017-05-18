@@ -45,7 +45,6 @@ class SoccerRuleManager
 	def updateOffsideTargetWithAllRule
 		offenceTeam = (@passer[:team] == "A") ? @teamA: @teamB
 		defenceTeam = (@passer[:team] == "A") ? @teamB: @teamA
-
 		# パサーのポジションをセット
 		offenceTeam.each do |mem|
 			if mem[:number] == @passer[:number]
@@ -53,15 +52,12 @@ class SoccerRuleManager
 				break
 			end
 		end
-
 		defendSideSecondPos = getPositionSecondPlayer(defenceTeam)
 		@offsideTarget = []
-
 		offenceTeam.each do |member|
 			inArea = isRecieverInEnemyArea(member) # 2nd Rule
 			nearThanPasser = isRecieverNearToGoalThan(member, @passer[:position]) # 3rd rule
 			nearThanDefender = isRecieverNearToGoalThan(member, defendSideSecondPos) # 4th rule
-
 			if inArea && nearThanPasser && nearThanDefender
 				@offsideTarget.push(member)
 			end
@@ -76,12 +72,10 @@ class SoccerRuleManager
 		result = false
 		case targetMember[:team]
 		when "A" then
-			# if (55..110).between? targetMember[:position]
 			if ( targetMember[:position].between?(55,110))
 				result = true
 			end
 		when "B" then
-			# if (0..55).between? targetMember[:position]
 			if ( targetMember[:position].between?(0,55))
 				result = true
 			end
@@ -97,7 +91,6 @@ class SoccerRuleManager
 	# @return [Boolean] ルールを満たすか
 	def isRecieverNearToGoalThan(reciever, target)
 		result = false
-
 		case @passer[:team]
 		when "A" then
 			if reciever[:position] > target
@@ -121,15 +114,12 @@ class SoccerRuleManager
 			posArr.push enemy[:position]
 		end
 		posArr.sort!
-
 		case @passer[:team]
 		when "A" then
 			posArr.reverse!
 		else
 		end
-
 		result = posArr[1] # No.2
-
 		return result
 	end
 end

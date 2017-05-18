@@ -24,8 +24,8 @@ class LandPriceManager
 		for num in 0..(sampleLandNum - 1)
 			lineOver3Arr = gets.chomp.split(' ')
 			@sampleLandDatas[num] = { x:lineOver3Arr[0].to_i,
-														y:lineOver3Arr[1].to_i,
-														price:lineOver3Arr[2].to_i }
+				y:lineOver3Arr[1].to_i,
+				price:lineOver3Arr[2].to_i }
 		end
 	end
 
@@ -33,9 +33,10 @@ class LandPriceManager
 	def putMagnitude
 		@sampleLandDatas.each do |land|
 			mag = getMagnitude(@position[:x],
-				@position[:y],
-				land[:x],
-				land[:y])
+			@position[:y],
+			land[:x],
+			land[:y]
+			)
 			land[:magnitude] = mag
 		end
 	end
@@ -57,10 +58,8 @@ class LandPriceManager
 	def getPrice
 		result = 0
 		targetPlaces = []
-
 		@sampleLandDatas.sort_by! { |hsh| hsh[:magnitude] }
 		targetPlaces = @sampleLandDatas.slice(0..(@k - 1))
-
 		targetPlaces.each do |place|
 			result += place[:price]
 		end
@@ -72,3 +71,11 @@ end
 lp = LandPriceManager.new
 lp.create
 lp.read
+
+# データ例
+# 0 0
+# 1
+# 3
+# 0 2 4
+# 1 1 5
+# 1 2 6
