@@ -1,15 +1,25 @@
 require 'date'
 require 'pp'
-class ConferenceTable
+
+# カンファレンスにおいて、各人の持ち時間からタイムテーブルを作成
+class ConferenceTimeTableManager
+	def create
+		load
+		@currentDate = Time.gm(2016, 2, 23, 10, 00, 00) # AM10:00スタート
+		@gotLunch = false
+	end
+
 	def read
+		show
+	end
+
+	def load
 		@peopleNum = gets.chomp.to_i
 		@table = []
 		for num in 0..(@peopleNum - 1)
 			lineOver2Arr = gets.chomp.split(' ')
 			@table[num] = { presenter:lineOver2Arr[0], mins: lineOver2Arr[1].to_i }
 		end
-		@currentDate = Time.gm(2016, 2, 23, 10, 00, 00)
-		@gotLunch = false
 	end
 
 	def show
@@ -27,25 +37,32 @@ class ConferenceTable
 		end
 	end
 
-	def takeRest row
+	# 休憩、通常と昼休憩の2パターン
+	# @param [Hash]
+	# @return [Fixnum]
+	def takeRest(row)
 		result = isItLunchTime(row) ? (60 * 60): (10 * 60);
 		return result
 	end
 
-	def isItLunchTime row
+	# （終了+休憩+発表の待ち時間）が12:01以降は昼休憩を取る
+	# @param [Hash]
+	# @return [Boolean]
+	def isItLunchTime(row)
 		return false if @gotLunch
 		result = false
 		nextTime = @currentDate + (10 * 60) + (row[:mins] * 60)
-		restTime = Time.gm(2016, 2, 23, 12, 01, 00) 
+		restTime = Time.gm(2016, 2, 23, 12, 01, 00)
 
 		if (restTime - nextTime) <= 0
 			result = true
 			@gotLunch = true
 		end
+
 		return result
 	end
 end
 
-ct = ConferenceTable.new
-ct.read
-ct.show
+ctt = ConferenceTimeTableManager.new
+ctt.create
+ctt.read

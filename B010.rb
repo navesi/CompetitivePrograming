@@ -1,5 +1,23 @@
-class Soccer
+# サッカーのルール。オフサイド判定を行う
+class SoccerRuleManager
+
+	def create
+		loadAndParse
+		updateOffsideTargetWithAllRule
+	end
+
 	def read
+		if @offsideTarget.length == 0
+			print "None"
+		else
+			@offsideTarget.each do |target|
+				print target[:number].to_s + "\n"
+			end
+		end #eo if
+	end
+
+	# データを標準入力から読み込み、それぞれ対応した各パラメータに置いていく
+	def loadAndParse
 		line1arr = gets.chomp.split(' ')
 		@passer = {}
 		@passer[:team ] = line1arr[0]
@@ -19,52 +37,42 @@ class Soccer
 		line3arr.each do |posB|
 		  @teamB.push ({:number => j, :team => "B", :position => posB.to_i})
 		  j += 1
-		end	
-		
+		end
 	end
 
-	def show
+	# 現時点でオフサイド判定になりえるターゲットをセットする
+	# パサーのポジションもセットｋ
+	def updateOffsideTargetWithAllRule
+		offenceTeam = (@passer[:team] == "A") ? @teamA: @teamB
+		defenceTeam = (@passer[:team] == "A") ? @teamB: @teamA
 
-		if(@passer[:team] =="A")
-			myTeam = @teamA
-			enemyTeam = @teamB
-		else
-			myTeam = @teamB
-			enemyTeam = @teamA
-		end
-
-		myTeam.each do |mem| 
+		# パサーのポジションをセット
+		offenceTeam.each do |mem|
 			if mem[:number] == @passer[:number]
 				@passer[:position] = mem[:position]
 				break
 			end
 		end
 
-		enemySecondPos = getEnemySecondPos enemyTeam
-		offsideTarget = []
+		defendSideSecondPos = getPositionSecondPlayer(defenceTeam)
+		@offsideTarget = []
 
-		myTeam.each do |member|
-			bool = secondRule member
-			cool = thirdRule member 
-			dool = fourthRule member, enemySecondPos
+		offenceTeam.each do |member|
+			inArea = isRecieverInEnemyArea(member) # 2nd Rule
+			nearThanPasser = isRecieverNearToGoalThan(member, @passer[:position]) # 3rd rule
+			nearThanDefender = isRecieverNearToGoalThan(member, defendSideSecondPos) # 4th rule
 
-			if bool && cool && dool
-				offsideTarget.push(member)
+			if inArea && nearThanPasser && nearThanDefender
+				@offsideTarget.push(member)
 			end
 		end
-
-		if offsideTarget.length == 0
-			print "None"
-		else
-			offsideTarget.each do |target|
-				print target[:number].to_s + "\n"
-			end
-		end #eo if
-
 	end
 
-	# in enemy area
-	def secondRule targetMember
+	# 受け取る側が相手側にいる場合
+	# ルール2
+	# @param [Hash] 受け取るプレイヤー
+	# @return [Boolean] ルールを満たすか
+	def isRecieverInEnemyArea(targetMember)
 		result = false
 		case targetMember[:team]
 		when "A" then
@@ -78,54 +86,38 @@ class Soccer
 				result = true
 			end
 		else
-		end# eo case
+		end # eo case
 		return result
 	end
 
-	# near goal than passer
-	def thirdRule targetMember
-		# pp @passer
-		# pp targetMember
+	# 受け取る側が近いか？
+	# ルール3とルール4での比較に使う
+	# @param [Hash] ボールを受け取るプレイヤー
+	# @param [Numeric] 比較対象のポジションX
+	# @return [Boolean] ルールを満たすか
+	def isRecieverNearToGoalThan(reciever, target)
 		result = false
-		# passerPos = @passer[:position]
 
 		case @passer[:team]
 		when "A" then
-			if targetMember[:position] > @passer[:position]
+			if reciever[:position] > target
 				result = true
 			end
 		when "B" then
-			if targetMember[:position] < @passer[:position]
+			if reciever[:position] < target
 				result = true
 			end
 		else
-		end# eo case
-		# pp result
+		end
 		return result
 	end
 
-	# near goal than enemy 2nd
-	def fourthRule targetMember, enemySecondPos
-		result = false
-		case @passer[:team]
-		when "A" then
-			if targetMember[:position] > enemySecondPos
-
-				result = true
-			end
-		when "B" then
-			if targetMember[:position] < enemySecondPos
-				result = true
-			end
-		else
-		end# eo case
-		return result
-
-	end
-
-	def getEnemySecondPos enemyTeam
+	# ポジションXを取得
+	# @param [Array] PlayerHash列
+	# @return [Numeric] ディフェンス側のゴールに2番めに近いプレイヤー位置
+	def getPositionSecondPlayer(defenceTeam)
 		posArr = []
-		enemyTeam.each do |enemy|
+		defenceTeam.each do |enemy|
 			posArr.push enemy[:position]
 		end
 		posArr.sort!
@@ -134,14 +126,14 @@ class Soccer
 		when "A" then
 			posArr.reverse!
 		else
-		end# eo case
+		end
 
-		result = posArr[1] # no 2
+		result = posArr[1] # No.2
 
 		return result
 	end
 end
 
-soccer = Soccer.new
+soccer = SoccerRuleManager.new
+soccer.create
 soccer.read
-soccer.show

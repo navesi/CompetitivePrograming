@@ -1,16 +1,28 @@
 require 'pp'
 
-class Place
+# Map上に居るヒーローの位置をログから読み取る
+class HeroPositionManager
+
+	def create
+		load
+	end
+
 	def read
+		updateHeroPositionWithAllLog
+		showCurrentHeroPos
+	end
+
+	# 標準入力から取る
+	def load
 		line1arr = gets.chomp.split(' ')
-		@width = line1arr[0].to_i
-		@height = line1arr[1].to_i
+		@mapWidth = line1arr[0].to_i
+		@mapHeight = line1arr[1].to_i
 		logNum = line1arr[2].to_i
 
 		line2arr = gets.chomp.split(' ')
-		@currentX = line2arr[0].to_i
-		@currentY = line2arr[1].to_i
-		# i = 0
+		@heroPos = {:x =>line2arr[0].to_i,
+			 :y =>line2arr[1].to_i}
+
 		@logs = Array.new
 		for num in 1..logNum do
 			lineOver3arr = gets.chomp.split(' ')
@@ -20,58 +32,50 @@ class Place
 		end
 	end
 
-	def showEndPosition
+	# ログから
+	def updateHeroPositionWithAllLog
 		@logs.each do |log|
-			updateWithLog log
+			updatePositionWithLog(log)
 		end
-
-		print @currentX.to_s + " " + @currentY.to_s
 	end
 
-	def updateWithLog log
-
-		case log[:direction] 
+	# ログから新しいポジションに更新する
+	# @param [Hash] 方向と長さのログ
+	def updatePositionWithLog(log)
+		case log[:direction]
 		when "U" then
-			moveUp log[:length]
+			updateHeroPositionUp log[:length]
 		when "D" then
-			moveDown log[:length]
+			updateHeroPositionDown log[:length]
 		when "R" then
-			moveRight log[:length]
+			updateHeroPositionRight log[:length]
 		when "L" then
-			moveLeft log[:length]
-		else
-
+			updateHeroPositionLeft log[:length]
+		# else
 		end # eo case
-
 	end
 
-	def moveUp length
-		# 3 -4 
-
-		@currentY = (@currentY + length) % @height	
-
+	def updateHeroPositionUp(length)
+		@heroPos[:y] = (@heroPos[:y] + length) % @mapHeight
 	end
 
-	def moveDown length
-			@currentY =(@currentY - length) % @height
+	def updateHeroPositionDown(length)
+		@heroPos[:y] = (@heroPos[:y] - length) % @mapHeight
 	end
 
-	def moveRight length
-			@currentX = (@currentX + length) % @width
+	def updateHeroPositionRight(length)
+		@heroPos[:x] = (@heroPos[:x] + length) % @mapWidth
 	end
 
-	def moveLeft length
-
-			@currentX =(@currentX - length) % @width
-
+	def updateHeroPositionLeft(length)
+		@heroPos[:x] = (@heroPos[:x] - length) % @mapWidth
 	end
 
-	def printCurrentPos
-		p @currentX.to_s + ' ' + @currentY.to_s
+	def showCurrentHeroPos
+		p @heroPos[:x].to_s + ' ' + @heroPos[:y].to_s
 	end
-
 end
 
-p = Place.new
+p = HeroPositionManager.new
+p.create
 p.read
-p.showEndPosition
