@@ -30,12 +30,6 @@ class ExtractLogs
 										log:lineOver3Arr
 									}
 		}
-		# for i in 0..(logNum - 1)
-		# 	 lineOver3Arr = gets.chomp#.split(' ')
-		# 	 @logs[i] = { id: i,
-		# 		 log:lineOver3Arr
-		# 	 }
-		# end
 	end
 
 	def show
