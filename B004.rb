@@ -24,12 +24,18 @@ class ExtractLogs
 		# 3行目以降には2行目で入力された行数分のApacheのログが入力されます。
 		# ログ１行の長さMは500文字以内とします。
 		@logs = []
-		for i in 0..(logNum - 1)
-			 lineOver3Arr = gets.chomp#.split(' ')
-			 @logs[i] = { id: i,
-				 log:lineOver3Arr
-			 }
-		end
+		(0..(logNum - 1)).each{|num|
+			lineOver3Arr = gets.chomp#.split(' ')
+			@logs[num] = { id: num,
+										log:lineOver3Arr
+									}
+		}
+		# for i in 0..(logNum - 1)
+		# 	 lineOver3Arr = gets.chomp#.split(' ')
+		# 	 @logs[i] = { id: i,
+		# 		 log:lineOver3Arr
+		# 	 }
+		# end
 	end
 
 	def show
